@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
 function StatCard({ title, value, subtitle }: { title: string; value: string; subtitle?: string }) {
@@ -51,8 +52,14 @@ export default function DashboardPage() {
               <h1 className="text-3xl font-bold text-primary">Panda Rider</h1>
               <p className="text-sm text-muted-foreground">Multi-Service E-Hailing Admin</p>
             </div>
-            <div className="flex items-center gap-4">
-              <div className="text-right">
+            <div className="flex items-center gap-3">
+              <Link href="/rider" className="px-4 py-2 bg-red-600 text-white rounded-full text-sm font-medium hover:bg-red-700 transition-colors">
+                Rider App
+              </Link>
+              <Link href="/driver" className="px-4 py-2 bg-gray-900 text-white rounded-full text-sm font-medium hover:bg-gray-800 transition-colors">
+                Driver App
+              </Link>
+              <div className="text-right ml-2">
                 <p className="text-sm font-medium">Admin User</p>
                 <p className="text-xs text-muted-foreground">Dashboard</p>
               </div>
