@@ -193,7 +193,7 @@ function AnalyticsTab() {
   );
 }
 
-function StatCard({ title, value }) {
+function StatCard({ title, value }: { title: string; value: string }) {
   return (
     <div className="bg-white rounded-lg shadow p-6">
       <p className="text-gray-500 text-sm">{title}</p>
