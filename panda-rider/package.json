@@ -1,0 +1,10 @@
+{
+  "version": "1.0.0",
+  "name": "panda-rider",
+  "description": "Multi-service e-hailing platform",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "admin-dashboard"
+  ]
+}

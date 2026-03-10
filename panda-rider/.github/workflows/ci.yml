@@ -1,0 +1,41 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  backend-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - run: cd backend && npm install
+      - run: cd backend && npm run lint
+      - run: cd backend && npm run test
+
+  admin-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - run: cd admin-dashboard && npm install
+      - run: cd admin-dashboard && npm run build
+
+  flutter-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.10.0'
+      - run: cd flutter-customer && flutter pub get
+      - run: cd flutter-customer && flutter analyze
+      - run: cd flutter-driver && flutter pub get
+      - run: cd flutter-driver && flutter analyze
