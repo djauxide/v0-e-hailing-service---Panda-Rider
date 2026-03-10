@@ -1,0 +1,20 @@
+# Admin Dashboard
+
+Panda Rider's central management interface for monitoring trips, users, drivers, and payments.
+
+## Getting Started
+
+```bash
+npm install
+npm run dev
+```
+
+Visit `http://localhost:3000` to access the admin dashboard.
+
+## Features
+
+- Real-time trip monitoring
+- User and driver management
+- Payment transaction tracking
+- Analytics and revenue trends
+- Driver verification system
