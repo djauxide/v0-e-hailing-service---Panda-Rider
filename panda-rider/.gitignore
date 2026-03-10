@@ -1,0 +1,79 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Flutter
+flutter-customer/.dart_tool/
+flutter-customer/.packages
+flutter-customer/build/
+flutter-customer/.flutter-plugins
+flutter-customer/.flutter-plugins-dependencies
+flutter-customer/pubspec.lock
+
+flutter-driver/.dart_tool/
+flutter-driver/.packages
+flutter-driver/build/
+flutter-driver/.flutter-plugins
+flutter-driver/.flutter-plugins-dependencies
+flutter-driver/pubspec.lock
+
+# Android
+*.apk
+*.aab
+*.jks
+*.keystore
+flutter-customer/android/.gradle/
+flutter-customer/android/local.properties
+flutter-driver/android/.gradle/
+flutter-driver/android/local.properties
+
+# iOS
+flutter-customer/ios/Pods/
+flutter-customer/ios/.symlinks/
+flutter-customer/ios/Flutter/Flutter.framework
+flutter-customer/ios/Flutter/Flutter.podspec
+flutter-driver/ios/Pods/
+flutter-driver/ios/.symlinks/
+flutter-driver/ios/Flutter/Flutter.framework
+flutter-driver/ios/Flutter/Flutter.podspec
+
+# Firebase
+google-services.json
+GoogleService-Info.plist
+firebase_options.dart
+
+# Coverage
+coverage/
+.nyc_output/
+
+# Misc
+*.pem
+.vercel
