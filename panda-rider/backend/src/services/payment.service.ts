@@ -1,4 +1,4 @@
-import { stripe } from '../config/stripe';
+import { stripe, STRIPE_CURRENCY } from '../config/stripe';
 import { collections } from '../config/firebase';
 import { Payment, PaymentStatus } from '../models/types';
 import { ApiError, ErrorCodes } from '../utils/errors';
@@ -6,12 +6,12 @@ import { generateId } from '../utils/helpers';
 import { Timestamp } from 'firebase-admin/firestore';
 
 export class PaymentService {
-  // Create a payment intent for a trip
+  // Create a payment intent for a trip (ZAR - South African Rand)
   async createPaymentIntent(
     userId: string,
     tripId: string,
     amount: number,
-    currency: string = 'usd'
+    currency: string = STRIPE_CURRENCY // Default to ZAR
   ): Promise<{ clientSecret: string; paymentIntentId: string }> {
     // Get user's Stripe customer ID
     const userDoc = await collections.users.doc(userId).get();

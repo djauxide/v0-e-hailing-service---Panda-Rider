@@ -11,9 +11,9 @@ export default function DriverApp() {
   const [activeTab, setActiveTab] = useState<"today" | "week" | "month">("today");
 
   const earningsData = {
-    today: { amount: "$87.40", trips: 8, hours: "5.2" },
-    week: { amount: "$423.60", trips: 38, hours: "28.4" },
-    month: { amount: "$1,842.00", trips: 156, hours: "112.0" },
+    today: { amount: "R1,573.20", trips: 8, hours: "5.2" },
+    week: { amount: "R7,624.80", trips: 38, hours: "28.4" },
+    month: { amount: "R33,156.00", trips: 156, hours: "112.0" },
   };
 
   return (
@@ -93,7 +93,7 @@ export default function DriverApp() {
                     <div className="w-8 h-1 bg-gray-700 rounded mx-auto mb-4" />
                     {/* Today stats */}
                     <div className="grid grid-cols-3 gap-2 mb-4">
-                      {[["$87.40", "Today"], ["8", "Trips"], ["4.9", "Rating"]].map(([val, label]) => (
+                      {[["R1,573", "Today"], ["8", "Trips"], ["4.9", "Rating"]].map(([val, label]) => (
                         <div key={label} className="bg-gray-800 rounded-xl p-3 text-center">
                           <p className="font-bold text-white text-sm">{val}</p>
                           <p className="text-gray-400 text-xs">{label}</p>
@@ -132,7 +132,7 @@ export default function DriverApp() {
                         </div>
                       </div>
                       <div className="bg-red-600 px-3 py-1.5 rounded-xl text-center">
-                        <p className="text-white font-bold text-base">$8.50</p>
+                        <p className="text-white font-bold text-base">R153.00</p>
                         <p className="text-red-200 text-xs">2.4 km</p>
                       </div>
                     </div>
@@ -236,9 +236,9 @@ export default function DriverApp() {
                 <div className="h-full flex flex-col items-center justify-center bg-gray-900 px-6 text-center">
                   <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center text-4xl mb-4">✓</div>
                   <h2 className="text-xl font-bold text-white mb-1">Trip Complete!</h2>
-                  <p className="text-gray-400 text-sm mb-6">You earned $8.50 for this trip</p>
+                  <p className="text-gray-400 text-sm mb-6">You earned R153.00 for this trip</p>
                   <div className="w-full bg-gray-800 rounded-2xl p-4 space-y-2 mb-6">
-                    {[["Distance", "2.4 km"], ["Duration", "12 min"], ["Earnings", "$8.50"], ["Service fee (20%)", "-$1.70"], ["Your payout", "$6.80"]].map(([k, v]) => (
+                    {[["Distance", "2.4 km"], ["Duration", "12 min"], ["Earnings", "R153.00"], ["Service fee (20%)", "-R30.60"], ["Your payout", "R122.40"]].map(([k, v]) => (
                       <div key={k} className="flex justify-between text-xs">
                         <span className="text-gray-400">{k}</span>
                         <span className={v.startsWith("-") ? "text-red-400" : k === "Your payout" ? "text-green-400 font-bold" : "text-white"}>{v}</span>
@@ -290,7 +290,7 @@ export default function DriverApp() {
                       </div>
                     </div>
                     <div className="space-y-2">
-                      {[["PandaGo rides", "$62.40", "6 trips"], ["PandaXL rides", "$18.00", "2 trips"], ["Tips", "$7.00", ""]].map(([cat, amt, trips]) => (
+                      {[["PandaGo rides", "R1,123.20", "6 trips"], ["PandaXL rides", "R324.00", "2 trips"], ["Tips", "R126.00", ""]].map(([cat, amt, trips]) => (
                         <div key={cat} className="flex justify-between items-center bg-gray-800 rounded-xl p-3">
                           <div>
                             <p className="text-white text-xs font-medium">{cat}</p>

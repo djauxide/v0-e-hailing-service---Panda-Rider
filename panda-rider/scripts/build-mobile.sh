@@ -1,10 +1,13 @@
 #!/bin/bash
 # Panda Rider - Mobile App Build Script
+# Currency: South African Rand (ZAR)
+# Region: South Africa
 
 set -e
 
 echo "========================================"
 echo "  Building Panda Rider Mobile Apps"
+echo "  Currency: ZAR (South African Rand)"
 echo "========================================"
 
 BUILD_TYPE=${1:-debug}

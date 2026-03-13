@@ -142,9 +142,9 @@ export default function RiderApp() {
                   </div>
                   <div className="flex-1 bg-white px-4 py-4 overflow-y-auto space-y-3">
                     {[
-                      { name: "PandaGo", seats: 4, time: "3 min", price: "$4.50", icon: "🐼" },
-                      { name: "PandaXL", seats: 6, time: "5 min", price: "$7.20", icon: "🚐" },
-                      { name: "PandaLux", seats: 4, time: "8 min", price: "$12.00", icon: "🏎" },
+                      { name: "PandaGo", seats: 4, time: "3 min", price: "R81.00", icon: "🐼" },
+                      { name: "PandaXL", seats: 6, time: "5 min", price: "R129.60", icon: "🚐" },
+                      { name: "PandaLux", seats: 4, time: "8 min", price: "R216.00", icon: "🏎" },
                     ].map((opt, i) => (
                       <button
                         key={i}
@@ -269,23 +269,23 @@ export default function RiderApp() {
                 <div className="h-full flex flex-col bg-white">
                   <div className="bg-red-600 px-5 pt-10 pb-8 text-white">
                     <p className="text-sm text-red-200 mb-1">Trip completed</p>
-                    <h2 className="text-3xl font-bold">$8.50</h2>
+                    <h2 className="text-3xl font-bold">R153.00</h2>
                     <p className="text-xs text-red-200 mt-1">2.4 km • 12 mins</p>
                   </div>
                   <div className="flex-1 px-5 py-5 space-y-4">
                     <div className="bg-gray-50 rounded-2xl p-4 space-y-2">
-                      {[["Base fare", "$3.00"], ["Distance (2.4km)", "$3.60"], ["Time (12 min)", "$1.20"], ["Service fee", "$0.70"]].map(([label, val]) => (
+                      {[["Base fare", "R54.00"], ["Distance (2.4km)", "R64.80"], ["Time (12 min)", "R21.60"], ["Service fee", "R12.60"]].map(([label, val]) => (
                         <div key={label} className="flex justify-between text-xs text-gray-600">
                           <span>{label}</span><span>{val}</span>
                         </div>
                       ))}
                       <div className="border-t border-gray-200 pt-2 flex justify-between text-sm font-bold text-gray-800">
-                        <span>Total</span><span>$8.50</span>
+                        <span>Total</span><span>R153.00</span>
                       </div>
                     </div>
                     <div className="space-y-2">
                       <p className="text-xs font-semibold text-gray-600 mb-1">Pay with</p>
-                      {["Credit Card •••• 4242", "Cash", "Panda Wallet ($20.00)"].map((m, i) => (
+                      {["Credit Card •••• 4242", "Cash", "Panda Wallet (R360.00)"].map((m, i) => (
                         <button key={i} className={`w-full flex items-center gap-3 p-3 rounded-xl border text-xs font-medium ${i === 0 ? "border-red-600 bg-red-50 text-red-600" : "border-gray-200 text-gray-600"}`}>
                           <div className={`w-4 h-4 rounded-full border-2 ${i === 0 ? "border-red-600 bg-red-600" : "border-gray-300"} flex items-center justify-center`}>
                             {i === 0 && <div className="w-2 h-2 rounded-full bg-white" />}

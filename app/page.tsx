@@ -15,12 +15,12 @@ function StatCard({ title, value, subtitle }: { title: string; value: string; su
 
 export default function DashboardPage() {
   const revenueData = [
-    { month: 'Jan', revenue: 4000, trips: 240 },
-    { month: 'Feb', revenue: 3000, trips: 221 },
-    { month: 'Mar', revenue: 2000, trips: 229 },
-    { month: 'Apr', revenue: 2780, trips: 200 },
-    { month: 'May', revenue: 1890, trips: 229 },
-    { month: 'Jun', revenue: 2390, trips: 200 },
+    { month: 'Jan', revenue: 72000, trips: 240 },
+    { month: 'Feb', revenue: 54000, trips: 221 },
+    { month: 'Mar', revenue: 36000, trips: 229 },
+    { month: 'Apr', revenue: 50040, trips: 200 },
+    { month: 'May', revenue: 34020, trips: 229 },
+    { month: 'Jun', revenue: 43020, trips: 200 },
   ];
 
   const servicesData = [
@@ -32,9 +32,9 @@ export default function DashboardPage() {
   const COLORS = ['#DC2626', '#2563EB', '#16A34A'];
 
   const tripsData = [
-    { id: 'TR001', service: 'Ride', passenger: 'John Doe', driver: 'Mike Johnson', status: 'Completed', fare: '$28.50' },
-    { id: 'TR002', service: 'Food', passenger: 'Jane Smith', driver: 'Sarah Lee', status: 'In Progress', fare: '$45.00' },
-    { id: 'TR003', service: 'Courier', passenger: 'Bob Wilson', driver: 'Tom Brown', status: 'Pending', fare: '$12.00' },
+    { id: 'TR001', service: 'Ride', passenger: 'Thabo Mokoena', driver: 'Mike Johnson', status: 'Completed', fare: 'R513.00' },
+    { id: 'TR002', service: 'Food', passenger: 'Naledi Khumalo', driver: 'Sarah Lee', status: 'In Progress', fare: 'R810.00' },
+    { id: 'TR003', service: 'Courier', passenger: 'Sipho Ndaba', driver: 'Tom Brown', status: 'Pending', fare: 'R216.00' },
   ];
 
   const driversData = [
@@ -76,7 +76,7 @@ export default function DashboardPage() {
           <StatCard title="Total Users" value="2,847" subtitle="+12% from last month" />
           <StatCard title="Active Drivers" value="384" subtitle="Currently Online" />
           <StatCard title="Active Trips" value="142" subtitle="In Progress" />
-          <StatCard title="Today Revenue" value="$8,450" subtitle="+23% from yesterday" />
+          <StatCard title="Today Revenue" value="R152,100" subtitle="+23% from yesterday" />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
@@ -90,7 +90,7 @@ export default function DashboardPage() {
                 <YAxis yAxisId="right" orientation="right" />
                 <Tooltip />
                 <Legend />
-                <Line yAxisId="left" type="monotone" dataKey="revenue" stroke="#DC2626" name="Revenue ($)" />
+                <Line yAxisId="left" type="monotone" dataKey="revenue" stroke="#DC2626" name="Revenue (R)" />
                 <Line yAxisId="right" type="monotone" dataKey="trips" stroke="#2563EB" name="Trips" />
               </LineChart>
             </ResponsiveContainer>
