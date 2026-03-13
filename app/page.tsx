@@ -156,25 +156,82 @@ export default function DashboardPage() {
         </div>
 
         {/* Payment Gateways Status */}
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-7 gap-3 mb-8">
           {[
             { name: "Stripe", status: "active", icon: "💳", processed: "R412,500" },
-            { name: "PayFast", status: "active", icon: "🇿🇦", processed: "R234,120" },
-            { name: "Ozow EFT", status: "active", icon: "🏦", processed: "R156,890" },
-            { name: "SnapScan", status: "active", icon: "📱", processed: "R89,450" },
-            { name: "Cash", status: "active", icon: "💵", processed: "R127,340" },
+            { name: "Google Pay", status: "active", icon: "G", processed: "R189,320" },
+            { name: "Apple Pay", status: "active", icon: "", processed: "R156,780" },
+            { name: "PayFast", status: "active", icon: "ZA", processed: "R234,120" },
+            { name: "Ozow EFT", status: "active", icon: "EFT", processed: "R156,890" },
+            { name: "SnapScan", status: "active", icon: "QR", processed: "R89,450" },
+            { name: "Cash", status: "active", icon: "R", processed: "R127,340" },
           ].map((gateway) => (
-            <div key={gateway.name} className="bg-white rounded-lg shadow p-4">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-xl">{gateway.icon}</span>
-                <span className={`px-2 py-0.5 rounded-full text-xs ${gateway.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>
-                  {gateway.status}
-                </span>
+            <div key={gateway.name} className="bg-white rounded-lg shadow p-3">
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-sm font-bold text-gray-700">{gateway.icon}</span>
+                <span className={`w-2 h-2 rounded-full ${gateway.status === 'active' ? 'bg-green-500' : 'bg-gray-400'}`} />
               </div>
-              <p className="font-semibold text-gray-800">{gateway.name}</p>
-              <p className="text-sm text-gray-500">{gateway.processed} today</p>
+              <p className="font-semibold text-gray-800 text-sm">{gateway.name}</p>
+              <p className="text-xs text-gray-500">{gateway.processed}</p>
             </div>
           ))}
+        </div>
+
+        {/* Surge Pricing Control */}
+        <div className="bg-white rounded-lg shadow p-6 mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h3 className="font-semibold text-gray-800">Surge Pricing Control</h3>
+              <p className="text-sm text-gray-500">Real-time demand-based pricing</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-xs font-medium">
+                1.2x Active
+              </span>
+              <button className="px-4 py-2 bg-gray-900 text-white rounded-lg text-sm font-medium">
+                Configure
+              </button>
+            </div>
+          </div>
+          <div className="grid grid-cols-5 gap-4">
+            {[
+              { area: "Sandton", multiplier: "1.5x", demand: "High", color: "text-red-600" },
+              { area: "CBD", multiplier: "1.3x", demand: "Medium", color: "text-orange-600" },
+              { area: "Soweto", multiplier: "1.0x", demand: "Normal", color: "text-green-600" },
+              { area: "Rosebank", multiplier: "1.8x", demand: "Very High", color: "text-red-600" },
+              { area: "Pretoria", multiplier: "1.2x", demand: "Medium", color: "text-orange-600" },
+            ].map((zone) => (
+              <div key={zone.area} className="bg-gray-50 rounded-lg p-3">
+                <p className="text-sm font-semibold text-gray-800">{zone.area}</p>
+                <p className={`text-lg font-bold ${zone.color}`}>{zone.multiplier}</p>
+                <p className="text-xs text-gray-500">{zone.demand} demand</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* User Management Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+          <div className="bg-white rounded-lg shadow p-4">
+            <p className="text-sm text-gray-500">Biometric Enabled</p>
+            <p className="text-2xl font-bold text-gray-800">1,847</p>
+            <p className="text-xs text-green-600">65% of users</p>
+          </div>
+          <div className="bg-white rounded-lg shadow p-4">
+            <p className="text-sm text-gray-500">2FA Enabled</p>
+            <p className="text-2xl font-bold text-gray-800">892</p>
+            <p className="text-xs text-blue-600">31% of users</p>
+          </div>
+          <div className="bg-white rounded-lg shadow p-4">
+            <p className="text-sm text-gray-500">Active Sessions</p>
+            <p className="text-2xl font-bold text-gray-800">3,421</p>
+            <p className="text-xs text-gray-500">Across all devices</p>
+          </div>
+          <div className="bg-white rounded-lg shadow p-4">
+            <p className="text-sm text-gray-500">Failed Logins (24h)</p>
+            <p className="text-2xl font-bold text-gray-800">47</p>
+            <p className="text-xs text-red-600">3 accounts locked</p>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">

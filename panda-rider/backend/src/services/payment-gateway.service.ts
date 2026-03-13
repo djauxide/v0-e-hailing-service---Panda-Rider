@@ -36,17 +36,36 @@ const OZOW_CONFIG = {
   baseUrl: 'https://api.ozow.com',
 };
 
+// Surge Pricing Configuration
+const SURGE_CONFIG = {
+  minMultiplier: 1.0,
+  maxMultiplier: 3.5,
+  thresholds: [
+    { demandRatio: 1.2, multiplier: 1.2 },
+    { demandRatio: 1.5, multiplier: 1.5 },
+    { demandRatio: 2.0, multiplier: 2.0 },
+    { demandRatio: 2.5, multiplier: 2.5 },
+    { demandRatio: 3.0, multiplier: 3.0 },
+    { demandRatio: 3.5, multiplier: 3.5 },
+  ],
+  peakHours: [7, 8, 9, 17, 18, 19], // Morning and evening rush
+  weekendMultiplier: 1.1,
+  holidayMultiplier: 1.3,
+  badWeatherMultiplier: 1.5,
+};
+
 interface PaymentResult {
   success: boolean;
   paymentId: string;
   transactionRef: string;
-  gateway: 'stripe' | 'payfast' | 'ozow' | 'snapscan' | 'wallet' | 'cash';
+  gateway: 'stripe' | 'payfast' | 'ozow' | 'snapscan' | 'wallet' | 'cash' | 'google_pay' | 'apple_pay';
   amount: number;
   currency: string;
   status: 'pending' | 'processing' | 'completed' | 'failed' | 'refunded';
   redirectUrl?: string;
   qrCode?: string;
   error?: string;
+  surgeMultiplier?: number;
 }
 
 interface RefundResult {
@@ -57,17 +76,121 @@ interface RefundResult {
 }
 
 export class PaymentGatewayService {
+  // Calculate surge multiplier based on current conditions
+  async calculateSurgeMultiplier(
+    pickupLat: number,
+    pickupLng: number,
+    serviceType: 'ride' | 'food' | 'courier'
+  ): Promise<{ multiplier: number; reason: string; expiresAt: Date }> {
+    const now = new Date();
+    const hour = now.getHours();
+    const dayOfWeek = now.getDay();
+    const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+    
+    let multiplier = SURGE_CONFIG.minMultiplier;
+    const reasons: string[] = [];
+
+    // Check peak hours
+    if (SURGE_CONFIG.peakHours.includes(hour)) {
+      multiplier *= 1.3;
+      reasons.push('Peak hour demand');
+    }
+
+    // Weekend adjustment
+    if (isWeekend) {
+      multiplier *= SURGE_CONFIG.weekendMultiplier;
+      reasons.push('Weekend pricing');
+    }
+
+    // Calculate demand/supply ratio from Firestore
+    const areaHash = this.getGeohash(pickupLat, pickupLng, 4);
+    const driversSnapshot = await db.collection('drivers')
+      .where('geohash', '>=', areaHash)
+      .where('geohash', '<=', areaHash + '\uf8ff')
+      .where('status', '==', 'online')
+      .get();
+
+    const requestsSnapshot = await db.collection('trip_requests')
+      .where('createdAt', '>=', Timestamp.fromDate(new Date(Date.now() - 5 * 60 * 1000)))
+      .where('status', '==', 'pending')
+      .get();
+
+    const availableDrivers = driversSnapshot.size || 1;
+    const pendingRequests = requestsSnapshot.size;
+    const demandRatio = pendingRequests / availableDrivers;
+
+    // Apply demand-based surge
+    for (const threshold of SURGE_CONFIG.thresholds) {
+      if (demandRatio >= threshold.demandRatio) {
+        multiplier = Math.max(multiplier, threshold.multiplier);
+        reasons.push(`High demand (${Math.round(demandRatio * 100)}% capacity)`);
+        break;
+      }
+    }
+
+    // Cap at maximum
+    multiplier = Math.min(multiplier, SURGE_CONFIG.maxMultiplier);
+
+    // Store surge data for transparency
+    await db.collection('surge_pricing').add({
+      lat: pickupLat,
+      lng: pickupLng,
+      geohash: areaHash,
+      multiplier,
+      reasons,
+      demandRatio,
+      availableDrivers,
+      pendingRequests,
+      serviceType,
+      createdAt: Timestamp.now(),
+      expiresAt: Timestamp.fromDate(new Date(Date.now() + 5 * 60 * 1000)),
+    });
+
+    return {
+      multiplier: Math.round(multiplier * 10) / 10,
+      reason: reasons.join(', ') || 'Standard pricing',
+      expiresAt: new Date(Date.now() + 5 * 60 * 1000),
+    };
+  }
+
+  private getGeohash(lat: number, lng: number, precision: number): string {
+    const base32 = '0123456789bcdefghjkmnpqrstuvwxyz';
+    let minLat = -90, maxLat = 90, minLng = -180, maxLng = 180;
+    let hash = '';
+    let isEven = true;
+    let bit = 0, ch = 0;
+
+    while (hash.length < precision) {
+      if (isEven) {
+        const mid = (minLng + maxLng) / 2;
+        if (lng >= mid) { ch |= 1 << (4 - bit); minLng = mid; }
+        else { maxLng = mid; }
+      } else {
+        const mid = (minLat + maxLat) / 2;
+        if (lat >= mid) { ch |= 1 << (4 - bit); minLat = mid; }
+        else { maxLat = mid; }
+      }
+      isEven = !isEven;
+      if (bit < 4) { bit++; }
+      else { hash += base32[ch]; bit = 0; ch = 0; }
+    }
+    return hash;
+  }
+
   // Process payment through appropriate gateway
   async processPayment(
     userId: string,
     tripId: string,
     amount: number,
-    paymentMethod: 'card' | 'eft' | 'qr' | 'wallet' | 'cash',
+    paymentMethod: 'card' | 'eft' | 'qr' | 'wallet' | 'cash' | 'google_pay' | 'apple_pay',
     options?: {
       cardToken?: string;
       bankRef?: string;
       walletPin?: string;
       saveCard?: boolean;
+      googlePayToken?: string;
+      applePayToken?: string;
+      surgeMultiplier?: number;
     }
   ): Promise<PaymentResult> {
     const paymentId = this.generatePaymentId();
@@ -92,8 +215,19 @@ export class PaymentGatewayService {
         case 'cash':
           result = await this.processCashPayment(userId, tripId, amount, paymentId, transactionRef);
           break;
+        case 'google_pay':
+          result = await this.processGooglePayPayment(userId, tripId, amount, paymentId, transactionRef, options?.googlePayToken);
+          break;
+        case 'apple_pay':
+          result = await this.processApplePayPayment(userId, tripId, amount, paymentId, transactionRef, options?.applePayToken);
+          break;
         default:
           throw new Error('Invalid payment method');
+      }
+
+      // Add surge multiplier to result if applicable
+      if (options?.surgeMultiplier && options.surgeMultiplier > 1) {
+        result.surgeMultiplier = options.surgeMultiplier;
       }
 
       // Store payment record
@@ -343,6 +477,126 @@ export class PaymentGatewayService {
       amount,
       currency: 'ZAR',
       status: 'pending',
+    };
+  }
+
+  // GOOGLE PAY (via Stripe)
+  private async processGooglePayPayment(
+    userId: string,
+    tripId: string,
+    amount: number,
+    paymentId: string,
+    transactionRef: string,
+    googlePayToken?: string
+  ): Promise<PaymentResult> {
+    if (!googlePayToken) {
+      throw new Error('Google Pay token required');
+    }
+
+    let customerId = await this.getStripeCustomerId(userId);
+    if (!customerId) {
+      const userDoc = await collections.users.doc(userId).get();
+      const user = userDoc.data();
+      const customer = await stripe.customers.create({
+        email: user?.email,
+        name: user?.name,
+        phone: user?.phone,
+        metadata: { userId },
+      });
+      customerId = customer.id;
+      await collections.users.doc(userId).update({ stripeCustomerId: customerId });
+    }
+
+    // Create payment method from Google Pay token
+    const paymentMethod = await stripe.paymentMethods.create({
+      type: 'card',
+      card: { token: googlePayToken },
+    });
+
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: Math.round(amount * 100),
+      currency: STRIPE_CURRENCY,
+      customer: customerId,
+      payment_method: paymentMethod.id,
+      confirm: true,
+      automatic_payment_methods: { enabled: false },
+      metadata: {
+        paymentId,
+        tripId,
+        userId,
+        transactionRef,
+        paymentType: 'google_pay',
+      },
+    });
+
+    return {
+      success: paymentIntent.status === 'succeeded',
+      paymentId,
+      transactionRef,
+      gateway: 'google_pay',
+      amount,
+      currency: 'ZAR',
+      status: this.mapStripeStatus(paymentIntent.status),
+    };
+  }
+
+  // APPLE PAY (via Stripe)
+  private async processApplePayPayment(
+    userId: string,
+    tripId: string,
+    amount: number,
+    paymentId: string,
+    transactionRef: string,
+    applePayToken?: string
+  ): Promise<PaymentResult> {
+    if (!applePayToken) {
+      throw new Error('Apple Pay token required');
+    }
+
+    let customerId = await this.getStripeCustomerId(userId);
+    if (!customerId) {
+      const userDoc = await collections.users.doc(userId).get();
+      const user = userDoc.data();
+      const customer = await stripe.customers.create({
+        email: user?.email,
+        name: user?.name,
+        phone: user?.phone,
+        metadata: { userId },
+      });
+      customerId = customer.id;
+      await collections.users.doc(userId).update({ stripeCustomerId: customerId });
+    }
+
+    // Create payment method from Apple Pay token
+    const paymentMethod = await stripe.paymentMethods.create({
+      type: 'card',
+      card: { token: applePayToken },
+    });
+
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: Math.round(amount * 100),
+      currency: STRIPE_CURRENCY,
+      customer: customerId,
+      payment_method: paymentMethod.id,
+      confirm: true,
+      automatic_payment_methods: { enabled: false },
+      metadata: {
+        paymentId,
+        tripId,
+        userId,
+        transactionRef,
+        paymentType: 'apple_pay',
+      },
+    });
+
+    return {
+      success: paymentIntent.status === 'succeeded',
+      paymentId,
+      transactionRef,
+      gateway: 'apple_pay',
+      amount,
+      currency: 'ZAR',
+      status: this.mapStripeStatus(paymentIntent.status),
     };
   }
 
