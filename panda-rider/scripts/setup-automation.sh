@@ -28,6 +28,25 @@ check_prerequisites() {
     fi
     echo -e "${GREEN}✓ Flutter installed${NC}"
     
+    # Check Java
+    if ! command -v java &> /dev/null; then
+        echo -e "${RED}Java not found. Please install Java 11 or higher${NC}"
+        exit 1
+    fi
+    echo -e "${GREEN}✓ Java installed${NC}"
+    
+    # Check Android SDK
+    if [ -z "$ANDROID_SDK_ROOT" ] && [ -z "$ANDROID_HOME" ]; then
+        echo -e "${YELLOW}Android SDK not configured${NC}"
+        echo -e "${YELLOW}Run: ./configure-android-sdk.sh to set up Android SDK${NC}"
+        read -p "Continue anyway? (y/n): " -n 1 -r
+        echo
+        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+            exit 1
+        fi
+    fi
+    echo -e "${GREEN}✓ Android SDK configured${NC}"
+    
     # Check Firebase CLI
     if ! command -v firebase &> /dev/null; then
         echo -e "${YELLOW}Installing Firebase CLI...${NC}"
