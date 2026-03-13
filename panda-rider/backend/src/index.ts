@@ -19,6 +19,7 @@ import chatRoutes from './routes/chat.routes';
 import adminRoutes from './routes/admin.routes';
 import walletRoutes from './routes/wallet.routes';
 import whatsappRoutes from './routes/whatsapp.routes';
+import reportingRoutes from './routes/reporting.routes';
 
 // Import services
 import { pandaBrainService } from './services/panda-brain.service';
@@ -78,6 +79,7 @@ app.use('/api/chat', chatRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/wallet', walletRoutes);
 app.use('/api/whatsapp', whatsappRoutes);
+app.use('/api/reporting', reportingRoutes);
 
 // Panda Brain status endpoint
 app.get('/api/panda-brain/status', (req, res) => {
