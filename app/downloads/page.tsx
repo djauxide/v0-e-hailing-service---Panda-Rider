@@ -277,6 +277,9 @@ flutter build ios   # Build for iOS`}
             One-click setup for Flutter + Firebase + Google Cloud integration with CI/CD pipelines.
           </p>
           <div className="bg-black/30 rounded-lg p-4 font-mono text-sm overflow-x-auto">
+            <div className="text-green-400"># Clone and setup</div>
+            <div className="text-green-400">$ git clone https://github.com/djauxide/v0-e-hailing-service---Panda-Rider.git</div>
+            <div className="text-green-400">$ cd v0-e-hailing-service---Panda-Rider</div>
             <div className="text-green-400">$ cd panda-rider/scripts</div>
             <div className="text-green-400">$ chmod +x setup-automation.sh</div>
             <div className="text-green-400">$ ./setup-automation.sh</div>
@@ -289,21 +292,25 @@ flutter build ios   # Build for iOS`}
           </div>
           <div className="mt-6 flex flex-wrap gap-4">
             <a
-              href="https://github.com/djauxide/v0-e-hailing-service---Panda-Rider/blob/main/panda-rider/scripts/setup-automation.sh"
+              href="https://github.com/djauxide/v0-e-hailing-service---Panda-Rider"
               target="_blank"
               rel="noopener noreferrer"
               className="px-6 py-3 bg-white text-purple-700 rounded-lg font-medium hover:bg-purple-50 transition-colors"
             >
-              View Setup Script
+              View Full Repository
             </a>
-            <a
-              href="https://github.com/djauxide/v0-e-hailing-service---Panda-Rider/blob/main/panda-rider/scripts/build-mobile.sh"
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href="/rider"
               className="px-6 py-3 bg-purple-500 text-white rounded-lg font-medium hover:bg-purple-400 transition-colors"
             >
-              Build Mobile Script
-            </a>
+              Preview Rider App
+            </Link>
+            <Link
+              href="/driver"
+              className="px-6 py-3 bg-gray-800 text-white rounded-lg font-medium hover:bg-gray-700 transition-colors"
+            >
+              Preview Driver App
+            </Link>
           </div>
         </div>
 

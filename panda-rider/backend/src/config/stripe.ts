@@ -10,4 +10,8 @@ export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
 
 export const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET || '';
 
+// Currency configuration for South Africa
+export const STRIPE_CURRENCY = 'zar';
+export const CURRENCY_SYMBOL = 'R';
+
 export default stripe;

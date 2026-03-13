@@ -7,8 +7,8 @@ const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'Panda Rider Admin Dashboard',
-  description: 'Multi-service e-hailing platform admin panel',
+  title: 'Panda Rider Admin Dashboard - South Africa',
+  description: 'Multi-service e-hailing platform for South Africa - Rides, Food & Courier in ZAR',
   generator: 'v0.app',
 }
 

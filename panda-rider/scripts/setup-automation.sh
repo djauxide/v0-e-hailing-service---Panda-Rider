@@ -1,6 +1,8 @@
 #!/bin/bash
 # Panda Rider - Full Automation Setup Script
 # Flutter + Firebase + Google Cloud Integration
+# Currency: South African Rand (ZAR)
+# Region: South Africa
 
 set -e
 
@@ -340,7 +342,7 @@ exports.onTripUpdated = functions.firestore
             break;
           case 'completed':
             title = 'Trip Completed';
-            body = `Total fare: $${after.fare?.total || 0}`;
+            body = `Total fare: R${after.fare?.total || 0}`;
             break;
           case 'cancelled':
             title = 'Trip Cancelled';
@@ -385,10 +387,10 @@ exports.processPayment = functions.https.onCall(async (data, context) => {
       await userDoc.ref.update({ stripeCustomerId: customerId });
     }
     
-    // Create payment intent
+    // Create payment intent (ZAR - South African Rand)
     const paymentIntent = await stripe.paymentIntents.create({
       amount: Math.round(amount * 100),
-      currency: 'usd',
+      currency: 'zar',
       customer: customerId,
       payment_method: paymentMethodId,
       confirm: true,
@@ -422,14 +424,15 @@ exports.processPayment = functions.https.onCall(async (data, context) => {
   }
 });
 
-// HTTP: Calculate fare
+// HTTP: Calculate fare (ZAR - South African Rand)
 exports.calculateFare = functions.https.onCall(async (data, context) => {
   const { distance, duration, serviceType } = data;
   
+  // Rates in ZAR (South African Rand)
   const rates = {
-    ride: { baseFare: 2.50, perKm: 1.20, perMin: 0.25 },
-    food: { baseFare: 3.00, perKm: 1.50, perMin: 0.15 },
-    courier: { baseFare: 5.00, perKm: 2.00, perMin: 0.10 },
+    ride: { baseFare: 45.00, perKm: 21.60, perMin: 4.50 },
+    food: { baseFare: 54.00, perKm: 27.00, perMin: 2.70 },
+    courier: { baseFare: 90.00, perKm: 36.00, perMin: 1.80 },
   };
   
   const rate = rates[serviceType] || rates.ride;

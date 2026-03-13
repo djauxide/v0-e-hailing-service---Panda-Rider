@@ -104,7 +104,7 @@ export class FareService {
       toll: 0,
       discount: 0,
       total: roundToTwoDecimals(total),
-      currency: 'USD',
+      currency: 'ZAR',
     };
   }
 
