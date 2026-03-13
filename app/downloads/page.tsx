@@ -270,6 +270,43 @@ flutter build ios   # Build for iOS`}
           </div>
         </div>
 
+        {/* Full Automation Section */}
+        <div className="bg-gradient-to-r from-purple-600 to-indigo-700 rounded-lg shadow-lg p-8 mb-12 text-white">
+          <h3 className="text-2xl font-bold mb-4">Full Automation Setup</h3>
+          <p className="text-purple-100 mb-6">
+            One-click setup for Flutter + Firebase + Google Cloud integration with CI/CD pipelines.
+          </p>
+          <div className="bg-black/30 rounded-lg p-4 font-mono text-sm overflow-x-auto">
+            <div className="text-green-400">$ cd panda-rider/scripts</div>
+            <div className="text-green-400">$ chmod +x setup-automation.sh</div>
+            <div className="text-green-400">$ ./setup-automation.sh</div>
+            <div className="text-gray-400 mt-2"># This will:</div>
+            <div className="text-gray-400"># - Configure Firebase project</div>
+            <div className="text-gray-400"># - Enable Google Cloud APIs</div>
+            <div className="text-gray-400"># - Set up FlutterFire for both apps</div>
+            <div className="text-gray-400"># - Deploy Cloud Functions</div>
+            <div className="text-gray-400"># - Create CI/CD GitHub Actions</div>
+          </div>
+          <div className="mt-6 flex flex-wrap gap-4">
+            <a
+              href="https://github.com/djauxide/v0-e-hailing-service---Panda-Rider/blob/main/panda-rider/scripts/setup-automation.sh"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-6 py-3 bg-white text-purple-700 rounded-lg font-medium hover:bg-purple-50 transition-colors"
+            >
+              View Setup Script
+            </a>
+            <a
+              href="https://github.com/djauxide/v0-e-hailing-service---Panda-Rider/blob/main/panda-rider/scripts/build-mobile.sh"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-6 py-3 bg-purple-500 text-white rounded-lg font-medium hover:bg-purple-400 transition-colors"
+            >
+              Build Mobile Script
+            </a>
+          </div>
+        </div>
+
         {/* Resources Section */}
         <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
           <a
