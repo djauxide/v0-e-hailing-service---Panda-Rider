@@ -82,6 +82,55 @@ export default function DashboardPage() {
           <StatCard title="Today Revenue" value="R152,100" subtitle="+23% from yesterday" />
         </div>
 
+        {/* Panda Brain AI Engine Status */}
+        <div className="bg-gradient-to-r from-gray-900 to-gray-800 rounded-lg shadow-lg p-6 mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center animate-pulse">
+                <span className="text-2xl">🧠</span>
+              </div>
+              <div>
+                <h3 className="text-white font-bold text-lg">Panda Brain AI Engine</h3>
+                <p className="text-green-400 text-sm flex items-center gap-1">
+                  <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                  Running - Fully Automated
+                </p>
+              </div>
+            </div>
+            <div className="flex gap-4">
+              <div className="text-center">
+                <p className="text-2xl font-bold text-white">12.5s</p>
+                <p className="text-xs text-gray-400">Avg Match Time</p>
+              </div>
+              <div className="text-center">
+                <p className="text-2xl font-bold text-white">1,247</p>
+                <p className="text-xs text-gray-400">Trips Processed</p>
+              </div>
+              <div className="text-center">
+                <p className="text-2xl font-bold text-white">3</p>
+                <p className="text-xs text-gray-400">Fraud Alerts</p>
+              </div>
+            </div>
+          </div>
+          <div className="grid grid-cols-5 gap-3">
+            {[
+              { label: "Driver Matching", status: "active", icon: "🎯" },
+              { label: "Surge Pricing", status: "active", icon: "📈" },
+              { label: "Fraud Detection", status: "active", icon: "🛡️" },
+              { label: "Auto Payouts", status: "active", icon: "💳" },
+              { label: "GPS Tracking", status: "active", icon: "📍" },
+            ].map((module) => (
+              <div key={module.label} className="bg-gray-700/50 rounded-lg p-3 flex items-center gap-2">
+                <span>{module.icon}</span>
+                <div>
+                  <p className="text-white text-xs font-medium">{module.label}</p>
+                  <p className="text-green-400 text-xs capitalize">{module.status}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* Fintech Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <div className="bg-gradient-to-r from-green-500 to-green-600 rounded-lg shadow p-6 text-white">
@@ -104,6 +153,28 @@ export default function DashboardPage() {
             <p className="text-3xl font-bold mt-2">4,521</p>
             <p className="text-xs text-orange-100 mt-1">Messages sent today</p>
           </div>
+        </div>
+
+        {/* Payment Gateways Status */}
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
+          {[
+            { name: "Stripe", status: "active", icon: "💳", processed: "R412,500" },
+            { name: "PayFast", status: "active", icon: "🇿🇦", processed: "R234,120" },
+            { name: "Ozow EFT", status: "active", icon: "🏦", processed: "R156,890" },
+            { name: "SnapScan", status: "active", icon: "📱", processed: "R89,450" },
+            { name: "Cash", status: "active", icon: "💵", processed: "R127,340" },
+          ].map((gateway) => (
+            <div key={gateway.name} className="bg-white rounded-lg shadow p-4">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xl">{gateway.icon}</span>
+                <span className={`px-2 py-0.5 rounded-full text-xs ${gateway.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>
+                  {gateway.status}
+                </span>
+              </div>
+              <p className="font-semibold text-gray-800">{gateway.name}</p>
+              <p className="text-sm text-gray-500">{gateway.processed} today</p>
+            </div>
+          ))}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
