@@ -53,6 +53,9 @@ export default function DashboardPage() {
               <p className="text-sm text-muted-foreground">Multi-Service E-Hailing Admin</p>
             </div>
             <div className="flex items-center gap-2">
+              <Link href="/wallet" className="px-4 py-2 bg-green-600 text-white rounded-full text-sm font-medium hover:bg-green-700 transition-colors">
+                Wallet
+              </Link>
               <Link href="/rider" className="px-4 py-2 bg-red-600 text-white rounded-full text-sm font-medium hover:bg-red-700 transition-colors">
                 Rider App
               </Link>
@@ -77,6 +80,30 @@ export default function DashboardPage() {
           <StatCard title="Active Drivers" value="384" subtitle="Currently Online" />
           <StatCard title="Active Trips" value="142" subtitle="In Progress" />
           <StatCard title="Today Revenue" value="R152,100" subtitle="+23% from yesterday" />
+        </div>
+
+        {/* Fintech Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <div className="bg-gradient-to-r from-green-500 to-green-600 rounded-lg shadow p-6 text-white">
+            <p className="text-green-100 text-sm font-medium">Wallet Transactions</p>
+            <p className="text-3xl font-bold mt-2">R845,230</p>
+            <p className="text-xs text-green-100 mt-1">1,234 transfers today</p>
+          </div>
+          <div className="bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg shadow p-6 text-white">
+            <p className="text-blue-100 text-sm font-medium">Money Transfers</p>
+            <p className="text-3xl font-bold mt-2">R324,500</p>
+            <p className="text-xs text-blue-100 mt-1">567 P2P transfers</p>
+          </div>
+          <div className="bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg shadow p-6 text-white">
+            <p className="text-purple-100 text-sm font-medium">Top-ups</p>
+            <p className="text-3xl font-bold mt-2">R198,700</p>
+            <p className="text-xs text-purple-100 mt-1">289 wallet top-ups</p>
+          </div>
+          <div className="bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg shadow p-6 text-white">
+            <p className="text-orange-100 text-sm font-medium">WhatsApp Alerts</p>
+            <p className="text-3xl font-bold mt-2">4,521</p>
+            <p className="text-xs text-orange-100 mt-1">Messages sent today</p>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">

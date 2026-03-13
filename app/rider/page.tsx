@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 
-const SCREENS = ["home", "booking", "searching", "tracking", "payment", "rating"] as const;
+const SCREENS = ["home", "booking", "searching", "tracking", "payment", "rating", "wallet", "send"] as const;
 type Screen = typeof SCREENS[number];
 
 export default function RiderApp() {
@@ -12,6 +12,9 @@ export default function RiderApp() {
   const [destination, setDestination] = useState("");
   const [serviceType, setServiceType] = useState<"ride" | "food" | "courier">("ride");
   const [rating, setRating] = useState(0);
+  const [sendAmount, setSendAmount] = useState("");
+  const [sendPhone, setSendPhone] = useState("");
+  const walletBalance = 2150.00;
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-start py-10 px-4">
@@ -88,6 +91,22 @@ export default function RiderApp() {
                   {/* Bottom sheet */}
                   <div className="bg-white rounded-t-3xl px-5 pt-4 pb-6 shadow-lg">
                     <div className="w-10 h-1 bg-gray-300 rounded mx-auto mb-4" />
+                    {/* Wallet Quick Access */}
+                    <button 
+                      onClick={() => setScreen("wallet")}
+                      className="w-full mb-3 p-3 bg-gradient-to-r from-green-500 to-green-600 rounded-2xl flex items-center justify-between"
+                    >
+                      <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                          <span className="text-white text-sm">R</span>
+                        </div>
+                        <div className="text-left">
+                          <p className="text-white/80 text-xs">Panda Wallet</p>
+                          <p className="text-white font-bold text-sm">R{walletBalance.toLocaleString('en-ZA', { minimumFractionDigits: 2 })}</p>
+                        </div>
+                      </div>
+                      <span className="text-white/80 text-xs">Tap to manage</span>
+                    </button>
                     {/* Service tabs */}
                     <div className="flex gap-2 mb-4">
                       {(["ride", "food", "courier"] as const).map((s) => (
@@ -328,6 +347,122 @@ export default function RiderApp() {
                   </button>
                 </div>
               )}
+
+              {/* WALLET SCREEN */}
+              {screen === "wallet" && (
+                <div className="h-full flex flex-col bg-gray-900">
+                  <div className="px-5 pt-10 pb-6">
+                    <button onClick={() => setScreen("home")} className="text-white/60 text-xs mb-4 flex items-center gap-1">
+                      ← Back
+                    </button>
+                    <div className="bg-gradient-to-r from-green-500 to-green-600 rounded-2xl p-5">
+                      <p className="text-green-100 text-xs mb-1">Available Balance</p>
+                      <h2 className="text-3xl font-bold text-white mb-1">R{walletBalance.toLocaleString('en-ZA', { minimumFractionDigits: 2 })}</h2>
+                      <p className="text-green-200 text-xs">Panda Wallet</p>
+                    </div>
+                  </div>
+                  <div className="flex-1 bg-white rounded-t-3xl px-5 pt-5 pb-6 overflow-y-auto">
+                    <div className="grid grid-cols-4 gap-3 mb-6">
+                      {[
+                        { label: "Send", icon: "↑", color: "bg-blue-500", action: () => setScreen("send") },
+                        { label: "Request", icon: "↓", color: "bg-green-500", action: () => {} },
+                        { label: "Top Up", icon: "+", color: "bg-purple-500", action: () => {} },
+                        { label: "Withdraw", icon: "→", color: "bg-orange-500", action: () => {} },
+                      ].map((item) => (
+                        <button key={item.label} onClick={item.action} className="flex flex-col items-center gap-1">
+                          <div className={`w-12 h-12 ${item.color} rounded-xl flex items-center justify-center text-white font-bold`}>
+                            {item.icon}
+                          </div>
+                          <span className="text-xs text-gray-600">{item.label}</span>
+                        </button>
+                      ))}
+                    </div>
+                    <p className="text-xs font-semibold text-gray-500 mb-3">Recent Transactions</p>
+                    <div className="space-y-3">
+                      {[
+                        { desc: "From Thabo M.", amount: "+R500.00", time: "Today, 14:32", type: "in" },
+                        { desc: "Trip Payment", amount: "-R153.00", time: "Today, 12:15", type: "out" },
+                        { desc: "Wallet Top-up", amount: "+R1,000.00", time: "Yesterday", type: "in" },
+                        { desc: "To Naledi K.", amount: "-R250.00", time: "2 days ago", type: "out" },
+                      ].map((tx, i) => (
+                        <div key={i} className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
+                          <div className={`w-8 h-8 rounded-full flex items-center justify-center ${tx.type === "in" ? "bg-green-100" : "bg-red-100"}`}>
+                            <span className={tx.type === "in" ? "text-green-600" : "text-red-600"}>{tx.type === "in" ? "↓" : "↑"}</span>
+                          </div>
+                          <div className="flex-1">
+                            <p className="text-sm font-medium text-gray-800">{tx.desc}</p>
+                            <p className="text-xs text-gray-400">{tx.time}</p>
+                          </div>
+                          <span className={`font-semibold text-sm ${tx.type === "in" ? "text-green-600" : "text-gray-800"}`}>{tx.amount}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* SEND MONEY SCREEN */}
+              {screen === "send" && (
+                <div className="h-full flex flex-col bg-white">
+                  <div className="bg-blue-600 px-5 pt-10 pb-6 text-white">
+                    <button onClick={() => setScreen("wallet")} className="text-white/80 text-xs mb-3 flex items-center gap-1">
+                      ← Back
+                    </button>
+                    <h2 className="text-lg font-bold">Send Money</h2>
+                    <p className="text-xs text-blue-200 mt-1">Instant transfers to any Panda user</p>
+                  </div>
+                  <div className="flex-1 px-5 py-5 space-y-4">
+                    <div>
+                      <label className="text-xs text-gray-500 block mb-1">Recipient Phone</label>
+                      <input
+                        type="tel"
+                        value={sendPhone}
+                        onChange={(e) => setSendPhone(e.target.value)}
+                        placeholder="+27 XX XXX XXXX"
+                        className="w-full bg-gray-50 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs text-gray-500 block mb-1">Amount (ZAR)</label>
+                      <div className="relative">
+                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-semibold">R</span>
+                        <input
+                          type="number"
+                          value={sendAmount}
+                          onChange={(e) => setSendAmount(e.target.value)}
+                          placeholder="0.00"
+                          className="w-full bg-gray-50 rounded-xl pl-10 pr-4 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2">
+                      {[100, 250, 500].map((amt) => (
+                        <button
+                          key={amt}
+                          onClick={() => setSendAmount(amt.toString())}
+                          className="py-2 bg-gray-100 rounded-xl text-xs font-medium text-gray-600 hover:bg-blue-50 hover:text-blue-600"
+                        >
+                          R{amt}
+                        </button>
+                      ))}
+                    </div>
+                    <div className="bg-gray-50 rounded-xl p-4">
+                      <div className="flex justify-between text-xs text-gray-500 mb-1">
+                        <span>Transfer fee (1%)</span>
+                        <span>R{sendAmount ? (parseFloat(sendAmount) * 0.01).toFixed(2) : "0.00"}</span>
+                      </div>
+                      <div className="flex justify-between text-sm font-semibold text-gray-800">
+                        <span>Total</span>
+                        <span>R{sendAmount ? (parseFloat(sendAmount) * 1.01).toFixed(2) : "0.00"}</span>
+                      </div>
+                    </div>
+                    <button className="w-full py-3 bg-blue-600 text-white rounded-2xl text-sm font-semibold">
+                      Send Money
+                    </button>
+                    <p className="text-center text-xs text-gray-400">Recipient will receive a WhatsApp notification</p>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Home indicator */}
@@ -346,7 +481,7 @@ export default function RiderApp() {
           <div className="space-y-2">
             <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">App Screens</p>
             <div className="grid grid-cols-2 gap-2">
-              {([["home", "Home & Map"], ["booking", "Booking"], ["searching", "Finding Driver"], ["tracking", "Live Tracking"], ["payment", "Payment"], ["rating", "Rate Trip"]] as [Screen, string][]).map(([s, label]) => (
+              {([["home", "Home & Map"], ["wallet", "Wallet"], ["send", "Send Money"], ["booking", "Booking"], ["searching", "Finding Driver"], ["tracking", "Live Tracking"], ["payment", "Payment"], ["rating", "Rate Trip"]] as [Screen, string][]).map(([s, label]) => (
                 <button
                   key={s}
                   onClick={() => setScreen(s)}
