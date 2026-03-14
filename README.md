@@ -42,6 +42,40 @@ You can still run without Firebase; demo drivers are used as fallback.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
+## Cloud automation & deployment
+
+### Local dev (app + next)
+
+```bash
+npm install
+npm run dev
+```
+
+### Firebase Firestore + functions
+
+1. Create `.env.local` with:
+   - `FIREBASE_PROJECT_ID`
+   - `FIREBASE_CLIENT_EMAIL`
+   - `FIREBASE_PRIVATE_KEY` (with `\n` escapes)
+2. Deploy functions from `firebase/functions`:
+   ```bash
+   cd firebase/functions
+   npm install
+   npm run deploy
+   ```
+3. Start emulator for local testing:
+   ```bash
+   cd firebase/functions
+   npm install
+   npm run serve
+   ```
+
+### Built-in APIs
+
+- `GET /api/tracking?lat=...&lng=...&radius=...` -> nearby drivers
+- `POST /api/tracking` -> driver GPS updates
+- `POST /api/drivers` -> actions: `verify`, `score`, `assign`
+
 ## Learn More
 
 To learn more, take a look at the following resources:

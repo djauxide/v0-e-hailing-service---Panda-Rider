@@ -6,7 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "cloud:init": "firebase init firestore functions --project $FIREBASE_PROJECT_ID",
+    "cloud:emulate": "firebase emulators:start --only firestore,functions",
+    "cloud:deploy": "firebase deploy --only firestore,functions",
+    "cloud:deploy:all": "firebase deploy"
   },
   "dependencies": {
     "@googlemaps/google-maps-services-js": "^3.4.2",

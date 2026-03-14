@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 
 type Screen = "home" | "request" | "active" | "arrived" | "earnings" | "profile";
@@ -9,6 +9,37 @@ export default function DriverApp() {
   const [screen, setScreen] = useState<Screen>("home");
   const [isOnline, setIsOnline] = useState(false);
   const [activeTab, setActiveTab] = useState<"today" | "week" | "month">("today");
+  const [location, setLocation] = useState({ lat: -26.2041, lng: 28.0473, heading: 45, speed: 15 });
+  const [driverId] = useState("D001");
+
+  useEffect(() => {
+    let interval: number | undefined;
+    if (isOnline) {
+      interval = window.setInterval(async () => {
+        setLocation(prev => {
+          const updated = {
+            lat: prev.lat + (Math.random() - 0.5) * 0.0006,
+            lng: prev.lng + (Math.random() - 0.5) * 0.0006,
+            heading: (prev.heading + (Math.random() - 0.5) * 30 + 360) % 360,
+            speed: 15 + Math.random() * 15,
+          };
+          void fetch('/api/tracking', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              driverId,
+              ...updated,
+              riderToken: 'demo_rider_token',
+            }),
+          }).then(() => {}).catch(err => console.error('GPS update failed', err));
+          return { ...prev, ...updated };
+        });
+      }, 3000);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isOnline, driverId]);
 
   const earningsData = {
     today: { amount: "R1,573.20", trips: 8, hours: "5.2" },
