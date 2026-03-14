@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { firestore } from '@/lib/firebaseAdmin';
 
 // Simulated real-time driver locations for demo
 const DEMO_DRIVERS = [
@@ -9,6 +10,36 @@ const DEMO_DRIVERS = [
   { id: 'D005', name: 'Naledi Khumalo', lat: -26.1823, lng: 28.0623, heading: 15, vehicle: 'Ford Fiesta', rating: 4.9 },
 ];
 
+async function getNearbyDrivers(lat: number, lng: number, radius: number) {
+  if (firestore) {
+    const snap = await firestore.collection('drivers').where('status', '==', 'online').limit(50).get();
+    const drivers: any[] = [];
+    snap.forEach(doc => {
+      const driver = doc.data();
+      const distance = Math.sqrt(
+        Math.pow((driver.lat - lat) * 111, 2) +
+        Math.pow((driver.lng - lng) * 111 * Math.cos(lat * Math.PI / 180), 2)
+      );
+      if (distance <= radius) {
+        drivers.push({ ...driver, id: doc.id, distance: distance.toFixed(2), eta: Math.floor(Math.random() * 10) + 2 });
+      }
+    });
+    return drivers;
+  }
+
+  return DEMO_DRIVERS.map(driver => ({
+    ...driver,
+    lat: driver.lat + (Math.random() - 0.5) * 0.01,
+    lng: driver.lng + (Math.random() - 0.5) * 0.01,
+    heading: (driver.heading + Math.random() * 20 - 10) % 360,
+    distance: Math.sqrt(
+      Math.pow((driver.lat - lat) * 111, 2) +
+      Math.pow((driver.lng - lng) * 111 * Math.cos(lat * Math.PI / 180), 2)
+    ).toFixed(2),
+    eta: Math.floor(Math.random() * 10) + 2,
+  })).filter(d => parseFloat(d.distance) <= radius);
+}
+
 // GET - Fetch nearby drivers
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
@@ -16,26 +47,12 @@ export async function GET(request: NextRequest) {
   const lng = parseFloat(searchParams.get('lng') || '28.0473');
   const radius = parseFloat(searchParams.get('radius') || '5');
 
-  // Add some random movement to simulate real-time updates
-  const drivers = DEMO_DRIVERS.map(driver => ({
-    ...driver,
-    lat: driver.lat + (Math.random() - 0.5) * 0.01,
-    lng: driver.lng + (Math.random() - 0.5) * 0.01,
-    heading: (driver.heading + Math.random() * 20 - 10) % 360,
-    distance: Math.sqrt(
-      Math.pow((driver.lat - lat) * 111, 2) + 
-      Math.pow((driver.lng - lng) * 111 * Math.cos(lat * Math.PI / 180), 2)
-    ).toFixed(2),
-    eta: Math.floor(Math.random() * 10) + 2,
-  }));
-
-  // Filter by radius
-  const nearbyDrivers = drivers.filter(d => parseFloat(d.distance) <= radius);
+  const drivers = await getNearbyDrivers(lat, lng, radius);
 
   return NextResponse.json({
     success: true,
     data: {
-      drivers: nearbyDrivers,
+      drivers,
       totalOnline: drivers.length,
       surgeMultiplier: 1.0,
       timestamp: new Date().toISOString(),
@@ -49,8 +66,17 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { driverId, lat, lng, heading, speed, tripId } = body;
 
-    // In production, this would update Firestore and trigger real-time updates
-    // For demo, we just acknowledge the update
+    if (firestore && driverId) {
+      await firestore.collection('drivers').doc(driverId).set({
+        lat,
+        lng,
+        heading,
+        speed,
+        updatedAt: new Date(),
+        tripId: tripId || null,
+        status: 'online',
+      }, { merge: true });
+    }
 
     return NextResponse.json({
       success: true,

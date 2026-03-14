@@ -22,6 +22,24 @@ pnpm dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+### Firebase integration (Fire StudioBase)
+
+To merge with Firebase from your project (e.g. `studio.firebase.google.com/panda-ridergit-93207626`):
+
+1. Create a Firebase service account JSON and set env vars in `.env.local`:
+   - `FIREBASE_PROJECT_ID`
+   - `FIREBASE_CLIENT_EMAIL`
+   - `FIREBASE_PRIVATE_KEY` (replace newlines with `\n`)
+
+2. Use Firestore in API routes: `app/api/tracking/route.ts` already writes `drivers` to Firestore if configured.
+
+3. Start dev server:
+   ```bash
+   npm run dev
+   ```
+
+You can still run without Firebase; demo drivers are used as fallback.
+
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 ## Learn More
