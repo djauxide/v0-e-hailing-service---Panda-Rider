@@ -1,13 +1,20 @@
 "use client";
 
 import Link from "next/link";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 
-function StatCard({ title, value, subtitle }: { title: string; value: string; subtitle?: string }) {
+function StatCard({ title, value, subtitle, trend }: { title: string; value: string; subtitle?: string; trend?: "up" | "down" }) {
   return (
-    <div className="bg-white rounded-lg shadow p-6">
-      <p className="text-muted-foreground text-sm font-medium">{title}</p>
-      <p className="text-3xl font-bold text-primary mt-2">{value}</p>
+    <div className="bg-card rounded-xl p-5 border border-border">
+      <div className="flex items-center justify-between mb-2">
+        <p className="text-muted-foreground text-sm">{title}</p>
+        {trend && (
+          <span className={`text-xs px-2 py-0.5 rounded-full ${trend === 'up' ? 'bg-primary/20 text-primary' : 'bg-destructive/20 text-destructive'}`}>
+            {trend === 'up' ? '+' : '-'}
+          </span>
+        )}
+      </div>
+      <p className="text-2xl font-bold text-foreground">{value}</p>
       {subtitle && <p className="text-xs text-muted-foreground mt-1">{subtitle}</p>}
     </div>
   );
@@ -15,325 +22,290 @@ function StatCard({ title, value, subtitle }: { title: string; value: string; su
 
 export default function DashboardPage() {
   const revenueData = [
-    { month: 'Jan', revenue: 72000, trips: 240 },
-    { month: 'Feb', revenue: 54000, trips: 221 },
-    { month: 'Mar', revenue: 36000, trips: 229 },
-    { month: 'Apr', revenue: 50040, trips: 200 },
-    { month: 'May', revenue: 34020, trips: 229 },
-    { month: 'Jun', revenue: 43020, trips: 200 },
+    { time: '00:00', revenue: 12000, trips: 45 },
+    { time: '04:00', revenue: 8000, trips: 32 },
+    { time: '08:00', revenue: 45000, trips: 156 },
+    { time: '12:00', revenue: 38000, trips: 134 },
+    { time: '16:00', revenue: 52000, trips: 178 },
+    { time: '20:00', revenue: 48000, trips: 165 },
+    { time: '24:00', revenue: 28000, trips: 98 },
   ];
-
-  const servicesData = [
-    { name: 'Rides', value: 45 },
-    { name: 'Food', value: 30 },
-    { name: 'Courier', value: 25 },
-  ];
-
-  const COLORS = ['#DC2626', '#2563EB', '#16A34A'];
 
   const tripsData = [
-    { id: 'TR001', service: 'Ride', passenger: 'Thabo Mokoena', driver: 'Mike Johnson', status: 'Completed', fare: 'R513.00' },
-    { id: 'TR002', service: 'Food', passenger: 'Naledi Khumalo', driver: 'Sarah Lee', status: 'In Progress', fare: 'R810.00' },
-    { id: 'TR003', service: 'Courier', passenger: 'Sipho Ndaba', driver: 'Tom Brown', status: 'Pending', fare: 'R216.00' },
+    { id: 'TR-7821', service: 'Ride', passenger: 'Thabo M.', driver: 'Mike J.', status: 'Completed', fare: 'R513' },
+    { id: 'TR-7822', service: 'Food', passenger: 'Naledi K.', driver: 'Sarah L.', status: 'In Progress', fare: 'R810' },
+    { id: 'TR-7823', service: 'Courier', passenger: 'Sipho N.', driver: 'Tom B.', status: 'Pending', fare: 'R216' },
+    { id: 'TR-7824', service: 'Ride', passenger: 'Lerato P.', driver: 'James K.', status: 'Completed', fare: 'R342' },
   ];
 
   const driversData = [
-    { id: 'D001', name: 'Mike Johnson', trips: 234, rating: 4.8, status: 'Online' },
-    { id: 'D002', name: 'Sarah Lee', trips: 189, rating: 4.9, status: 'Online' },
-    { id: 'D003', name: 'Tom Brown', trips: 156, rating: 4.6, status: 'Offline' },
+    { id: 'D001', name: 'Mike Johnson', trips: 234, rating: 4.8, status: 'Online', earnings: 'R12,450' },
+    { id: 'D002', name: 'Sarah Lee', trips: 189, rating: 4.9, status: 'Online', earnings: 'R9,870' },
+    { id: 'D003', name: 'Tom Brown', trips: 156, rating: 4.6, status: 'Offline', earnings: 'R8,230' },
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
-      <header className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <header className="border-b border-border sticky top-0 bg-background/95 backdrop-blur z-50">
+        <div className="max-w-[1600px] mx-auto px-6 py-4">
           <div className="flex justify-between items-center">
-            <div>
-              <h1 className="text-3xl font-bold text-primary">Panda Rider</h1>
-              <p className="text-sm text-muted-foreground">Multi-Service E-Hailing Admin</p>
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
+                <span className="text-primary-foreground font-bold text-sm">PR</span>
+              </div>
+              <div>
+                <h1 className="text-lg font-semibold text-foreground">Panda Rider</h1>
+                <p className="text-xs text-muted-foreground">Admin Dashboard</p>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <Link href="/wallet" className="px-4 py-2 bg-green-600 text-white rounded-full text-sm font-medium hover:bg-green-700 transition-colors flex items-center gap-1.5">
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+            
+            <nav className="flex items-center gap-1">
+              <Link href="/wallet" className="px-4 py-2 rounded-lg text-sm font-medium text-foreground hover:bg-secondary transition-colors flex items-center gap-2">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                 </svg>
                 Panda Pay
               </Link>
-              <Link href="/reports" className="px-4 py-2 bg-indigo-600 text-white rounded-full text-sm font-medium hover:bg-indigo-700 transition-colors">
+              <Link href="/reports" className="px-4 py-2 rounded-lg text-sm font-medium text-foreground hover:bg-secondary transition-colors">
                 Reports
               </Link>
-              <Link href="/rider" className="px-4 py-2 bg-red-600 text-white rounded-full text-sm font-medium hover:bg-red-700 transition-colors">
+              <Link href="/rider" className="px-4 py-2 rounded-lg text-sm font-medium text-foreground hover:bg-secondary transition-colors">
                 Rider App
               </Link>
-              <Link href="/driver" className="px-4 py-2 bg-gray-900 text-white rounded-full text-sm font-medium hover:bg-gray-800 transition-colors">
+              <Link href="/driver" className="px-4 py-2 rounded-lg text-sm font-medium text-foreground hover:bg-secondary transition-colors">
                 Driver App
               </Link>
-              <Link href="/downloads" className="px-4 py-2 bg-blue-600 text-white rounded-full text-sm font-medium hover:bg-blue-700 transition-colors">
-                Download
-              </Link>
-              <div className="text-right ml-4">
-                <p className="text-sm font-medium">Admin User</p>
-                <p className="text-xs text-muted-foreground">Main Dashboard</p>
+              <div className="w-px h-6 bg-border mx-2" />
+              <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center">
+                <span className="text-xs font-medium text-foreground">A</span>
               </div>
-            </div>
+            </nav>
           </div>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <StatCard title="Total Users" value="2,847" subtitle="+12% from last month" />
-          <StatCard title="Active Drivers" value="384" subtitle="Currently Online" />
-          <StatCard title="Active Trips" value="142" subtitle="In Progress" />
-          <StatCard title="Today Revenue" value="R152,100" subtitle="+23% from yesterday" />
+      <main className="max-w-[1600px] mx-auto px-6 py-8">
+        {/* Stats Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <StatCard title="Total Users" value="2,847" subtitle="+12% from last month" trend="up" />
+          <StatCard title="Active Drivers" value="384" subtitle="Currently online" trend="up" />
+          <StatCard title="Active Trips" value="142" subtitle="In progress now" />
+          <StatCard title="Today Revenue" value="R152,100" subtitle="+23% from yesterday" trend="up" />
         </div>
 
-        {/* Panda Brain AI Engine Status */}
-        <div className="bg-gradient-to-r from-gray-900 to-gray-800 rounded-lg shadow-lg p-6 mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center animate-pulse">
-                <span className="text-2xl">🧠</span>
+        {/* Panda Brain Status */}
+        <div className="bg-card rounded-xl border border-border p-6 mb-8">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center">
+                <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
               </div>
               <div>
-                <h3 className="text-white font-bold text-lg">Panda Brain AI Engine</h3>
-                <p className="text-green-400 text-sm flex items-center gap-1">
-                  <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-                  Running - Fully Automated
-                </p>
+                <h3 className="text-foreground font-semibold">Panda Brain AI Engine</h3>
+                <div className="flex items-center gap-2 mt-1">
+                  <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                  <span className="text-sm text-primary">Running - Fully Automated</span>
+                </div>
               </div>
             </div>
-            <div className="flex gap-4">
-              <div className="text-center">
-                <p className="text-2xl font-bold text-white">12.5s</p>
-                <p className="text-xs text-gray-400">Avg Match Time</p>
+            <div className="flex gap-8">
+              <div className="text-right">
+                <p className="text-2xl font-bold text-foreground">12.5s</p>
+                <p className="text-xs text-muted-foreground">Avg Match</p>
               </div>
-              <div className="text-center">
-                <p className="text-2xl font-bold text-white">1,247</p>
-                <p className="text-xs text-gray-400">Trips Processed</p>
+              <div className="text-right">
+                <p className="text-2xl font-bold text-foreground">1,247</p>
+                <p className="text-xs text-muted-foreground">Processed</p>
               </div>
-              <div className="text-center">
-                <p className="text-2xl font-bold text-white">3</p>
-                <p className="text-xs text-gray-400">Fraud Alerts</p>
+              <div className="text-right">
+                <p className="text-2xl font-bold text-foreground">3</p>
+                <p className="text-xs text-muted-foreground">Alerts</p>
               </div>
             </div>
           </div>
+          
           <div className="grid grid-cols-5 gap-3">
             {[
-              { label: "Driver Matching", status: "active", icon: "🎯" },
-              { label: "Surge Pricing", status: "active", icon: "📈" },
-              { label: "Fraud Detection", status: "active", icon: "🛡️" },
-              { label: "Auto Payouts", status: "active", icon: "💳" },
-              { label: "GPS Tracking", status: "active", icon: "📍" },
+              { label: "Driver Matching", status: "active" },
+              { label: "Surge Pricing", status: "active" },
+              { label: "Fraud Detection", status: "active" },
+              { label: "Auto Payouts", status: "active" },
+              { label: "GPS Tracking", status: "active" },
             ].map((module) => (
-              <div key={module.label} className="bg-gray-700/50 rounded-lg p-3 flex items-center gap-2">
-                <span>{module.icon}</span>
-                <div>
-                  <p className="text-white text-xs font-medium">{module.label}</p>
-                  <p className="text-green-400 text-xs capitalize">{module.status}</p>
-                </div>
+              <div key={module.label} className="bg-secondary/50 rounded-lg p-3 flex items-center justify-between">
+                <span className="text-sm text-foreground">{module.label}</span>
+                <span className="w-2 h-2 rounded-full bg-primary" />
               </div>
             ))}
           </div>
         </div>
 
-        {/* Panda Pay - Fintech Stats */}
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
-            <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-            </svg>
-          </div>
-          <div>
-            <h2 className="font-bold text-gray-900 leading-none">Panda Pay</h2>
-            <p className="text-xs text-gray-500 leading-none">Wallet &amp; Fintech — under Main Dashboard</p>
-          </div>
-          <Link href="/wallet" className="ml-auto text-sm text-green-600 font-medium hover:underline">
-            Open Panda Pay
-          </Link>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-gradient-to-r from-green-500 to-green-600 rounded-lg shadow p-6 text-white">
-            <p className="text-green-100 text-sm font-medium">Wallet Transactions</p>
-            <p className="text-3xl font-bold mt-2">R845,230</p>
-            <p className="text-xs text-green-100 mt-1">1,234 transfers today</p>
-          </div>
-          <div className="bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg shadow p-6 text-white">
-            <p className="text-blue-100 text-sm font-medium">Money Transfers</p>
-            <p className="text-3xl font-bold mt-2">R324,500</p>
-            <p className="text-xs text-blue-100 mt-1">567 P2P transfers</p>
-          </div>
-          <div className="bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg shadow p-6 text-white">
-            <p className="text-purple-100 text-sm font-medium">Top-ups</p>
-            <p className="text-3xl font-bold mt-2">R198,700</p>
-            <p className="text-xs text-purple-100 mt-1">289 wallet top-ups</p>
-          </div>
-          <div className="bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg shadow p-6 text-white">
-            <p className="text-orange-100 text-sm font-medium">WhatsApp Alerts</p>
-            <p className="text-3xl font-bold mt-2">4,521</p>
-            <p className="text-xs text-orange-100 mt-1">Messages sent today</p>
-          </div>
-        </div>
-
-        {/* Payment Gateways Status */}
-        <div className="grid grid-cols-2 md:grid-cols-7 gap-3 mb-8">
-          {[
-            { name: "Stripe", status: "active", icon: "💳", processed: "R412,500" },
-            { name: "Google Pay", status: "active", icon: "G", processed: "R189,320" },
-            { name: "Apple Pay", status: "active", icon: "", processed: "R156,780" },
-            { name: "PayFast", status: "active", icon: "ZA", processed: "R234,120" },
-            { name: "Ozow EFT", status: "active", icon: "EFT", processed: "R156,890" },
-            { name: "SnapScan", status: "active", icon: "QR", processed: "R89,450" },
-            { name: "Cash", status: "active", icon: "R", processed: "R127,340" },
-          ].map((gateway) => (
-            <div key={gateway.name} className="bg-white rounded-lg shadow p-3">
-              <div className="flex items-center justify-between mb-1">
-                <span className="text-sm font-bold text-gray-700">{gateway.icon}</span>
-                <span className={`w-2 h-2 rounded-full ${gateway.status === 'active' ? 'bg-green-500' : 'bg-gray-400'}`} />
+        {/* Main Content Grid */}
+        <div className="grid grid-cols-12 gap-6 mb-8">
+          {/* Revenue Chart */}
+          <div className="col-span-8 bg-card rounded-xl border border-border p-6">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h3 className="text-foreground font-semibold">Revenue Overview</h3>
+                <p className="text-sm text-muted-foreground">Today&apos;s performance</p>
               </div>
-              <p className="font-semibold text-gray-800 text-sm">{gateway.name}</p>
-              <p className="text-xs text-gray-500">{gateway.processed}</p>
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <span className="w-3 h-3 rounded-full bg-primary" />
+                  <span className="text-xs text-muted-foreground">Revenue</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="w-3 h-3 rounded-full bg-chart-2" />
+                  <span className="text-xs text-muted-foreground">Trips</span>
+                </div>
+              </div>
             </div>
-          ))}
+            <ResponsiveContainer width="100%" height={280}>
+              <AreaChart data={revenueData}>
+                <defs>
+                  <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="oklch(0.65 0.2 145)" stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor="oklch(0.65 0.2 145)" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.25 0.01 260)" />
+                <XAxis dataKey="time" stroke="oklch(0.5 0 0)" fontSize={12} />
+                <YAxis stroke="oklch(0.5 0 0)" fontSize={12} />
+                <Tooltip 
+                  contentStyle={{ 
+                    backgroundColor: 'oklch(0.17 0.005 260)', 
+                    border: '1px solid oklch(0.25 0.01 260)',
+                    borderRadius: '8px',
+                    color: 'oklch(0.95 0 0)'
+                  }} 
+                />
+                <Area type="monotone" dataKey="revenue" stroke="oklch(0.65 0.2 145)" fillOpacity={1} fill="url(#colorRevenue)" strokeWidth={2} />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Payment Gateways */}
+          <div className="col-span-4 bg-card rounded-xl border border-border p-6">
+            <h3 className="text-foreground font-semibold mb-4">Payment Gateways</h3>
+            <div className="space-y-3">
+              {[
+                { name: "Stripe", amount: "R412,500", percentage: 32 },
+                { name: "Google Pay", amount: "R189,320", percentage: 15 },
+                { name: "Apple Pay", amount: "R156,780", percentage: 12 },
+                { name: "PayFast", amount: "R234,120", percentage: 18 },
+                { name: "Ozow EFT", amount: "R156,890", percentage: 12 },
+                { name: "Cash", amount: "R127,340", percentage: 11 },
+              ].map((gateway) => (
+                <div key={gateway.name} className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-secondary flex items-center justify-center">
+                      <span className="text-xs font-medium text-foreground">{gateway.name.charAt(0)}</span>
+                    </div>
+                    <span className="text-sm text-foreground">{gateway.name}</span>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm font-medium text-foreground">{gateway.amount}</p>
+                    <p className="text-xs text-muted-foreground">{gateway.percentage}%</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
-        {/* Surge Pricing Control */}
-        <div className="bg-white rounded-lg shadow p-6 mb-8">
+        {/* Surge Pricing */}
+        <div className="bg-card rounded-xl border border-border p-6 mb-8">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h3 className="font-semibold text-gray-800">Surge Pricing Control</h3>
-              <p className="text-sm text-gray-500">Real-time demand-based pricing</p>
+              <h3 className="text-foreground font-semibold">Surge Pricing</h3>
+              <p className="text-sm text-muted-foreground">Real-time demand zones</p>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-xs font-medium">
-                1.2x Active
-              </span>
-              <button className="px-4 py-2 bg-gray-900 text-white rounded-lg text-sm font-medium">
-                Configure
-              </button>
-            </div>
+            <span className="px-3 py-1 rounded-full bg-chart-3/20 text-chart-3 text-sm font-medium">
+              1.2x Average
+            </span>
           </div>
           <div className="grid grid-cols-5 gap-4">
             {[
-              { area: "Sandton", multiplier: "1.5x", demand: "High", color: "text-red-600" },
-              { area: "CBD", multiplier: "1.3x", demand: "Medium", color: "text-orange-600" },
-              { area: "Soweto", multiplier: "1.0x", demand: "Normal", color: "text-green-600" },
-              { area: "Rosebank", multiplier: "1.8x", demand: "Very High", color: "text-red-600" },
-              { area: "Pretoria", multiplier: "1.2x", demand: "Medium", color: "text-orange-600" },
+              { area: "Sandton", multiplier: "1.5x", demand: "High" },
+              { area: "CBD", multiplier: "1.3x", demand: "Medium" },
+              { area: "Soweto", multiplier: "1.0x", demand: "Normal" },
+              { area: "Rosebank", multiplier: "1.8x", demand: "Very High" },
+              { area: "Pretoria", multiplier: "1.2x", demand: "Medium" },
             ].map((zone) => (
-              <div key={zone.area} className="bg-gray-50 rounded-lg p-3">
-                <p className="text-sm font-semibold text-gray-800">{zone.area}</p>
-                <p className={`text-lg font-bold ${zone.color}`}>{zone.multiplier}</p>
-                <p className="text-xs text-gray-500">{zone.demand} demand</p>
+              <div key={zone.area} className="bg-secondary/50 rounded-lg p-4">
+                <p className="text-sm text-muted-foreground">{zone.area}</p>
+                <p className="text-xl font-bold text-foreground mt-1">{zone.multiplier}</p>
+                <p className="text-xs text-muted-foreground">{zone.demand}</p>
               </div>
             ))}
           </div>
         </div>
 
-        {/* User Management Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <div className="bg-white rounded-lg shadow p-4">
-            <p className="text-sm text-gray-500">Biometric Enabled</p>
-            <p className="text-2xl font-bold text-gray-800">1,847</p>
-            <p className="text-xs text-green-600">65% of users</p>
-          </div>
-          <div className="bg-white rounded-lg shadow p-4">
-            <p className="text-sm text-gray-500">2FA Enabled</p>
-            <p className="text-2xl font-bold text-gray-800">892</p>
-            <p className="text-xs text-blue-600">31% of users</p>
-          </div>
-          <div className="bg-white rounded-lg shadow p-4">
-            <p className="text-sm text-gray-500">Active Sessions</p>
-            <p className="text-2xl font-bold text-gray-800">3,421</p>
-            <p className="text-xs text-gray-500">Across all devices</p>
-          </div>
-          <div className="bg-white rounded-lg shadow p-4">
-            <p className="text-sm text-gray-500">Failed Logins (24h)</p>
-            <p className="text-2xl font-bold text-gray-800">47</p>
-            <p className="text-xs text-red-600">3 accounts locked</p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-          <div className="lg:col-span-2 bg-white rounded-lg shadow p-6">
-            <h2 className="text-lg font-semibold text-foreground mb-4">Revenue & Trips</h2>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={revenueData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="month" />
-                <YAxis yAxisId="left" />
-                <YAxis yAxisId="right" orientation="right" />
-                <Tooltip />
-                <Legend />
-                <Line yAxisId="left" type="monotone" dataKey="revenue" stroke="#DC2626" name="Revenue (R)" />
-                <Line yAxisId="right" type="monotone" dataKey="trips" stroke="#2563EB" name="Trips" />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-
-          <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-lg font-semibold text-foreground mb-4">Services Breakdown</h2>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie data={servicesData} cx="50%" cy="50%" labelLine={false} label={({ name, value }) => `${name}: ${value}%`} outerRadius={80} fill="#8884d8" dataKey="value">
-                  {servicesData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index]} />
-                  ))}
-                </Pie>
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-lg font-semibold text-foreground mb-4">Recent Trips</h2>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b">
-                    <th className="text-left py-2 px-2">Trip ID</th>
-                    <th className="text-left py-2 px-2">Service</th>
-                    <th className="text-left py-2 px-2">Status</th>
-                    <th className="text-right py-2 px-2">Fare</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {tripsData.map((trip) => (
-                    <tr key={trip.id} className="border-b hover:bg-slate-50">
-                      <td className="py-2 px-2 font-mono">{trip.id}</td>
-                      <td className="py-2 px-2">{trip.service}</td>
-                      <td className="py-2 px-2">
-                        <span className={`px-2 py-1 rounded text-xs font-medium ${
-                          trip.status === 'Completed' ? 'bg-green-100 text-green-800' :
-                          trip.status === 'In Progress' ? 'bg-blue-100 text-blue-800' :
-                          'bg-yellow-100 text-yellow-800'
-                        }`}>
-                          {trip.status}
-                        </span>
-                      </td>
-                      <td className="py-2 px-2 text-right font-semibold">{trip.fare}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+        {/* Tables Grid */}
+        <div className="grid grid-cols-2 gap-6">
+          {/* Recent Trips */}
+          <div className="bg-card rounded-xl border border-border p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-foreground font-semibold">Recent Trips</h3>
+              <Link href="/reports" className="text-sm text-primary hover:underline">View all</Link>
+            </div>
+            <div className="space-y-3">
+              {tripsData.map((trip) => (
+                <div key={trip.id} className="flex items-center justify-between p-3 rounded-lg bg-secondary/30 hover:bg-secondary/50 transition-colors">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center">
+                      <span className="text-xs font-mono text-muted-foreground">{trip.service.charAt(0)}</span>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-foreground">{trip.passenger}</p>
+                      <p className="text-xs text-muted-foreground">{trip.id}</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm font-semibold text-foreground">{trip.fare}</p>
+                    <span className={`text-xs px-2 py-0.5 rounded-full ${
+                      trip.status === 'Completed' ? 'bg-primary/20 text-primary' :
+                      trip.status === 'In Progress' ? 'bg-chart-2/20 text-chart-2' :
+                      'bg-chart-3/20 text-chart-3'
+                    }`}>
+                      {trip.status}
+                    </span>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-lg font-semibold text-foreground mb-4">Top Drivers</h2>
-            <div className="space-y-4">
-              {driversData.map((driver) => (
-                <div key={driver.id} className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-                  <div>
-                    <p className="font-medium text-foreground">{driver.name}</p>
-                    <p className="text-xs text-muted-foreground">{driver.trips} trips • Rating: {driver.rating}</p>
+          {/* Top Drivers */}
+          <div className="bg-card rounded-xl border border-border p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-foreground font-semibold">Top Drivers</h3>
+              <Link href="/driver" className="text-sm text-primary hover:underline">View all</Link>
+            </div>
+            <div className="space-y-3">
+              {driversData.map((driver, index) => (
+                <div key={driver.id} className="flex items-center justify-between p-3 rounded-lg bg-secondary/30 hover:bg-secondary/50 transition-colors">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center">
+                      <span className="text-sm font-semibold text-foreground">{index + 1}</span>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-foreground">{driver.name}</p>
+                      <p className="text-xs text-muted-foreground">{driver.trips} trips</p>
+                    </div>
                   </div>
-                  <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                    driver.status === 'Online' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-                  }`}>
-                    {driver.status}
-                  </span>
+                  <div className="text-right">
+                    <p className="text-sm font-semibold text-foreground">{driver.earnings}</p>
+                    <div className="flex items-center gap-1 justify-end">
+                      <svg className="w-3 h-3 text-chart-3" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                      <span className="text-xs text-muted-foreground">{driver.rating}</span>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
