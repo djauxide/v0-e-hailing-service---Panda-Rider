@@ -44,29 +44,18 @@ export default function WalletPage() {
       <header className="border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex justify-between items-center">
-            <div className="flex items-center gap-3">
-              <Link href="/" className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-sm">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-                Main Dashboard
-              </Link>
-              <span className="text-slate-600">/</span>
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center">
-                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                  </svg>
-                </div>
-                <div>
-                  <h1 className="text-lg font-bold text-white leading-none">Panda Pay</h1>
-                  <p className="text-xs text-slate-400 leading-none">Wallet &amp; Fintech</p>
-                </div>
+            <Link href="/" className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center">
+                <span className="text-white font-bold">PR</span>
               </div>
-            </div>
+              <div>
+                <h1 className="text-xl font-bold text-white">Panda Wallet</h1>
+                <p className="text-xs text-slate-400">Fintech Services</p>
+              </div>
+            </Link>
             <div className="flex items-center gap-3">
-              <Link href="/reports" className="px-4 py-2 bg-white/10 text-white rounded-lg text-sm font-medium hover:bg-white/20 transition-colors">
-                Reports
+              <Link href="/" className="px-4 py-2 bg-white/10 text-white rounded-lg text-sm font-medium hover:bg-white/20 transition-colors">
+                Dashboard
               </Link>
               <Link href="/rider" className="px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-medium hover:bg-red-700 transition-colors">
                 Book Ride
@@ -78,21 +67,16 @@ export default function WalletPage() {
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Balance Card */}
-        <div className="bg-gradient-to-r from-green-600 to-green-700 rounded-2xl p-8 mb-8 relative overflow-hidden">
+        <div className="bg-gradient-to-r from-red-600 to-red-700 rounded-2xl p-8 mb-8 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
-          <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/4" />
           <div className="relative">
-            <div className="flex items-center gap-2 mb-3">
-              <span className="px-2 py-0.5 bg-white/20 text-white text-xs font-semibold rounded-full tracking-wide">PANDA PAY</span>
-              <span className="px-2 py-0.5 bg-white/20 text-white text-xs rounded-full">Wallet</span>
-            </div>
-            <p className="text-green-100 text-sm mb-1">Available Balance</p>
+            <p className="text-red-200 text-sm mb-1">Available Balance</p>
             <h2 className="text-5xl font-bold text-white mb-2">R{walletBalance.toLocaleString('en-ZA', { minimumFractionDigits: 2 })}</h2>
-            <p className="text-green-200 text-sm">Pending: R{pendingAmount.toFixed(2)}</p>
+            <p className="text-red-200 text-sm">Pending: R{pendingAmount.toFixed(2)}</p>
             <div className="flex gap-3 mt-6">
               <button 
                 onClick={() => setActiveTab("topup")}
-                className="px-6 py-2 bg-white text-green-700 rounded-lg text-sm font-semibold hover:bg-green-50 transition-colors"
+                className="px-6 py-2 bg-white text-red-600 rounded-lg text-sm font-semibold hover:bg-red-50 transition-colors"
               >
                 Top Up
               </button>

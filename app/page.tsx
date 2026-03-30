@@ -53,11 +53,8 @@ export default function DashboardPage() {
               <p className="text-sm text-muted-foreground">Multi-Service E-Hailing Admin</p>
             </div>
             <div className="flex items-center gap-2">
-              <Link href="/wallet" className="px-4 py-2 bg-green-600 text-white rounded-full text-sm font-medium hover:bg-green-700 transition-colors flex items-center gap-1.5">
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                </svg>
-                Panda Pay
+              <Link href="/wallet" className="px-4 py-2 bg-green-600 text-white rounded-full text-sm font-medium hover:bg-green-700 transition-colors">
+                Wallet
               </Link>
               <Link href="/reports" className="px-4 py-2 bg-indigo-600 text-white rounded-full text-sm font-medium hover:bg-indigo-700 transition-colors">
                 Reports
@@ -73,7 +70,7 @@ export default function DashboardPage() {
               </Link>
               <div className="text-right ml-4">
                 <p className="text-sm font-medium">Admin User</p>
-                <p className="text-xs text-muted-foreground">Main Dashboard</p>
+                <p className="text-xs text-muted-foreground">Dashboard</p>
               </div>
             </div>
           </div>
@@ -137,21 +134,7 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Panda Pay - Fintech Stats */}
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
-            <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-            </svg>
-          </div>
-          <div>
-            <h2 className="font-bold text-gray-900 leading-none">Panda Pay</h2>
-            <p className="text-xs text-gray-500 leading-none">Wallet &amp; Fintech — under Main Dashboard</p>
-          </div>
-          <Link href="/wallet" className="ml-auto text-sm text-green-600 font-medium hover:underline">
-            Open Panda Pay
-          </Link>
-        </div>
+        {/* Fintech Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <div className="bg-gradient-to-r from-green-500 to-green-600 rounded-lg shadow p-6 text-white">
             <p className="text-green-100 text-sm font-medium">Wallet Transactions</p>
